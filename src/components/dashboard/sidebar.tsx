@@ -39,8 +39,8 @@ export function DashboardSidebar() {
             </Link>
         </SidebarMenuItem>
         <SidebarMenuItem>
-                <Link href="/job-postings" passHref>
-                <SidebarMenuButton isActive={pathname.startsWith('/job-postings')} tooltip="Case Files">
+                <Link href="/case-files" passHref>
+                <SidebarMenuButton isActive={pathname.startsWith('/case-files')} tooltip="Case Files">
                     <FolderKanban />
                     <span>Case Files</span>
                 </SidebarMenuButton>
@@ -118,7 +118,7 @@ export function DashboardSidebar() {
       <SidebarFooter>
         <div className="group-data-[collapsible=icon]:hidden">
           <p className="font-semibold text-sidebar-foreground">John Doe</p>
-          <p className="text-xs text-muted-foreground">Senior Partner</p>
+          <p className="text-xs text-muted-foreground">john.doe@example.com</p>
         </div>
       </SidebarFooter>
     </Sidebar>
