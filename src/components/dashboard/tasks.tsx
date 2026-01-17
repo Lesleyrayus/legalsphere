@@ -52,7 +52,7 @@ export function Tasks() {
             {pendingTasks.map((task) => (
               <Dialog key={task.id}>
                 <DialogTrigger asChild>
-                  <div className="flex items-center p-4 rounded-md border hover:bg-muted/50 cursor-pointer transition-colors">
+                  <button className="flex w-full text-left items-center p-4 rounded-md border hover:bg-muted/50 cursor-pointer transition-colors">
                     <div className="flex items-center gap-4">
                         <task.icon className="h-6 w-6 text-muted-foreground" />
                         <div className="flex-1 space-y-1">
@@ -61,7 +61,7 @@ export function Tasks() {
                         </div>
                     </div>
                     <div className="ml-auto text-sm text-muted-foreground">{task.dueDate}</div>
-                  </div>
+                  </button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[480px]">
                   <DialogHeader>
