@@ -8,7 +8,7 @@ export default function CaseFilesPage() {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset className="bg-slate-50/50">
-        <DashboardHeader page="Case Files" />
+        <DashboardHeader page="Case  Files" />
         <main className="p-4 lg:p-8">
           <CaseFiles />
         </main>

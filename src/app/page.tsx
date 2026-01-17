@@ -14,7 +14,7 @@ export default function DashboardPage() {
       <DashboardSidebar />
       <div className="md:ml-[--sidebar-width-icon] lg:ml-0">
         <SidebarInset>
-          <DashboardHeader page="Dashboard"/>
+          <DashboardHeader page="Dashboard "/>
           <div className="p-4 lg:p-8 space-y-8">
             <OverviewCards />
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
