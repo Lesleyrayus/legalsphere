@@ -21,6 +21,7 @@ export function DashboardSidebar() {
     <Sidebar collapsible="icon" className="group-data-[variant=floating]:bg-sidebar/80 group-data-[variant=floating]:backdrop-blur-lg border-r">
       <SidebarHeader className="h-auto p-4 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:h-auto">
         <div className="flex items-center gap-3">
+            <Briefcase className="group-data-[collapsible=icon]:mx-auto" />
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
                 <span className="text-xs text-muted-foreground">LegalSphere</span>
                 <span className="font-semibold text-sidebar-foreground">J. Doe & Associates</span>
