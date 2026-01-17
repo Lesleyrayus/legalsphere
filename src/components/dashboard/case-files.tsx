@@ -58,7 +58,7 @@ export function CaseFiles() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Case Files</CardTitle>
+          <CardTitle>Case Files </CardTitle>
           <CardDescription>Manage your firm's case files.</CardDescription>
         </div>
         <Button>

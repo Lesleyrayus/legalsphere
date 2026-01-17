@@ -17,7 +17,7 @@ export const overviewData: OverviewCardData[] = [
     icon: FileText,
   },
   {
-    title: 'Upcoming Bookings',
+    title: 'Upcoming Bookings ',
     value: '4',
     description: 'Client appointments scheduled',
     href: '/bookings',
