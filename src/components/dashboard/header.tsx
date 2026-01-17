@@ -43,12 +43,6 @@ export function DashboardHeader({ page = 'Dashboard' }: DashboardHeaderProps) {
                 <span className="sr-only">Notifications</span>
             </Button>
         </Link>
-        <Link href="/profile">
-            <Avatar className="h-9 w-9 cursor-pointer">
-                <AvatarImage src="https://picsum.photos/seed/lawyer/100/100" alt="User Avatar" data-ai-hint="person face" />
-                <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-        </Link>
       </div>
     </header>
   );
