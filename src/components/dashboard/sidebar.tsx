@@ -87,7 +87,7 @@ export function DashboardSidebar() {
                     <BarChart2/>
                     <span>Analytics</span>
                 </SidebarMenuButton>
-            </Link>
+            </Link >
         </SidebarMenuItem>
         <SidebarMenuItem>
                 <Link href="/notifications" passHref>
