@@ -114,12 +114,6 @@ export function DashboardSidebar() {
         </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="justify-center p-4 group-data-[collapsible=icon]:p-2">
-        <div className="flex flex-col group-data-[collapsible=icon]:hidden p-2">
-            <span className="font-semibold text-sm text-sidebar-foreground">John Doe</span>
-            <span className="text-xs text-sidebar-foreground/70">john.doe@example.com</span>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }
