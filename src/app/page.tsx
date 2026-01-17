@@ -3,7 +3,7 @@ import { DashboardSidebar } from '@/components/dashboard/sidebar';
 import { DashboardHeader } from '@/components/dashboard/header';
 import { OverviewCards } from '@/components/dashboard/overview-cards';
 import { RecentActivities } from '@/components/dashboard/organization-activity-overview';
-import { UpcomingAppointments } from '@/components/dashboard/job-posting-trends';
+import { UpcomingAppointments } from '@/components/dashboard/upcoming-appointments';
 import { Tasks } from '@/components/dashboard/tasks';
 import { Bookings } from '@/components/dashboard/bookings';
 

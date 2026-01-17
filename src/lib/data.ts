@@ -13,7 +13,7 @@ export const overviewData: OverviewCardData[] = [
     title: 'Open Cases',
     value: '32',
     description: 'Cases currently in progress',
-    href: '/job-postings',
+    href: '/case-files',
     icon: FileText,
   },
   {
