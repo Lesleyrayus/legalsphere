@@ -9,7 +9,7 @@ export function UpcomingAppointments() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Appointments</CardTitle>
+        <CardTitle>Upcoming Appointments </CardTitle>
         <CardDescription>Your next client meetings.</CardDescription>
       </CardHeader>
       <CardContent>

@@ -41,7 +41,7 @@ export function Tasks() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Assigned Tasks</CardTitle>
+        <CardTitle>Assigned Tasks </CardTitle>
         <CardDescription>
           Review and respond to your pending tasks.
         </CardDescription>

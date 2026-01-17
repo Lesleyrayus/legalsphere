@@ -27,7 +27,7 @@ export function DashboardHeader({ page = 'Dashboard' }: DashboardHeaderProps) {
       </Button>
       
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">Lawyer Dashboard</Link>
+        <Link href="/" className="hover:text-foreground">Lawyer  Dashboard</Link>
         <ChevronRight className="h-4 w-4" />
         <span className="font-medium text-foreground">{page}</span>
       </div>

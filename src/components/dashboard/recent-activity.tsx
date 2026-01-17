@@ -9,7 +9,7 @@ export function RecentActivities() {
     <Card>
       <CardHeader>
         <CardTitle>Recent Activity</CardTitle>
-        <CardDescription>An overview of recent actions.</CardDescription>
+        <CardDescription>An overview of  recent actions.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {recentActivitiesData.map((activity) => (

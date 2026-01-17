@@ -84,7 +84,7 @@ export function DashboardSidebar() {
                 <Link href="/analytics" passHref>
                 <SidebarMenuButton isActive={pathname.startsWith('/analytics')} tooltip="Analytics">
                     <BarChart2/>
-                    <span>Analytics</span>
+                    <span>Analytics </span>
                 </SidebarMenuButton>
             </Link >
         </SidebarMenuItem>
