@@ -11,7 +11,6 @@ import {
   SidebarFooter,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Briefcase, LayoutGrid, BarChart2, Settings, Users, FolderKanban, Scale, MessageSquare, Calendar, ClipboardCheck, Bell, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 
