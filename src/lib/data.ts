@@ -312,6 +312,12 @@ export type CaseFile = {
 
 export const caseFilesData: CaseFile[] = [
   {
+    id: '#2024-046',
+    clientName: 'Angela Martin',
+    status: 'Pending',
+    lastUpdated: '1 day ago',
+  },
+  {
     id: '#2024-045',
     clientName: 'Michael Scott',
     status: 'Active',

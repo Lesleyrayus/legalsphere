@@ -1,8 +1,24 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableRow, TableHead, TableHeader } from "@/components/ui/table";
+"use client";
+
+import { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableHeader,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, X, Check } from "lucide-react";
 import { caseFilesData, type CaseFile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import {
@@ -16,8 +32,28 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 export function CaseFiles() {
+  const [files, setFiles] = useState<CaseFile[]>(caseFilesData);
+  const { toast } = useToast();
+
+  const handleCaseFileAction = (
+    fileId: string,
+    action: "Accepted" | "Denied"
+  ) => {
+    const newStatus = action === "Accepted" ? "Active" : "Closed";
+    setFiles((prevFiles) =>
+      prevFiles.map((file) =>
+        file.id === fileId ? { ...file, status: newStatus } : file
+      )
+    );
+    toast({
+      title: `Case ${action}`,
+      description: `You have ${action.toLowerCase()} case ${fileId}. The status is now "${newStatus}".`,
+    });
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -41,7 +77,7 @@ export function CaseFiles() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {caseFilesData.map((file: CaseFile) => (
+            {files.map((file: CaseFile) => (
               <TableRow key={file.id}>
                 <TableCell className="font-medium">{file.id}</TableCell>
                 <TableCell>{file.clientName}</TableCell>
@@ -55,8 +91,12 @@ export function CaseFiles() {
                         : "default"
                     }
                     className={cn(
-                        file.status === 'Active' && 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800',
-                        file.status === 'Pending' && 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
+                      file.status === "Active" &&
+                        "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800",
+                      file.status === "Pending" &&
+                        "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
+                      file.status === "Closed" &&
+                        "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800"
                     )}
                   >
                     {file.status}
@@ -64,66 +104,108 @@ export function CaseFiles() {
                 </TableCell>
                 <TableCell>{file.lastUpdated}</TableCell>
                 <TableCell className="text-right">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm">View Details</Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[480px]">
-                        <DialogHeader>
-                          <DialogTitle>Case Details</DialogTitle>
-                          <DialogDescription>
-                            Viewing details for case {file.id}.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="case-id" className="text-right">
-                              Case ID
-                            </Label>
-                            <span id="case-id" className="col-span-2 font-semibold">{file.id}</span>
-                          </div>
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="client-name" className="text-right">
-                              Client
-                            </Label>
-                            <span id="client-name" className="col-span-2">{file.clientName}</span>
-                          </div>
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="status" className="text-right">
-                              Status
-                            </Label>
-                            <div id="status" className="col-span-2">
-                               <Badge
-                                  variant={
-                                    file.status === "Active"
-                                      ? "secondary"
-                                      : file.status === "Closed"
-                                      ? "outline"
-                                      : "default"
-                                  }
-                                  className={cn(
-                                      file.status === 'Active' && 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800',
-                                      file.status === 'Pending' && 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
-                                  )}
-                                >
-                                  {file.status}
-                                </Badge>
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="last-updated" className="text-right">
-                              Last Updated
-                            </Label>
-                            <span id="last-updated" className="col-span-2">{file.lastUpdated}</span>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        View Details
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[480px]">
+                      <DialogHeader>
+                        <DialogTitle>Case Details</DialogTitle>
+                        <DialogDescription>
+                          Viewing details for case {file.id}.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="case-id" className="text-right">
+                            Case ID
+                          </Label>
+                          <span
+                            id="case-id"
+                            className="col-span-2 font-semibold"
+                          >
+                            {file.id}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="client-name" className="text-right">
+                            Client
+                          </Label>
+                          <span id="client-name" className="col-span-2">
+                            {file.clientName}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="status" className="text-right">
+                            Status
+                          </Label>
+                          <div id="status" className="col-span-2">
+                            <Badge
+                              variant={
+                                file.status === "Active"
+                                  ? "secondary"
+                                  : file.status === "Closed"
+                                  ? "outline"
+                                  : "default"
+                              }
+                              className={cn(
+                                file.status === "Active" &&
+                                  "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800",
+                                file.status === "Pending" &&
+                                  "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
+                              )}
+                            >
+                              {file.status}
+                            </Badge>
                           </div>
                         </div>
-                        <DialogFooter>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label
+                            htmlFor="last-updated"
+                            className="text-right"
+                          >
+                            Last Updated
+                          </Label>
+                          <span id="last-updated" className="col-span-2">
+                            {file.lastUpdated}
+                          </span>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        {file.status === "Pending" ? (
+                          <>
+                            <DialogClose asChild>
+                              <Button
+                                variant="outline"
+                                onClick={() =>
+                                  handleCaseFileAction(file.id, "Denied")
+                                }
+                              >
+                                <X className="h-4 w-4 mr-1" />
+                                Deny
+                              </Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                onClick={() =>
+                                  handleCaseFileAction(file.id, "Accepted")
+                                }
+                              >
+                                <Check className="h-4 w-4 mr-1" />
+                                Accept
+                              </Button>
+                            </DialogClose>
+                          </>
+                        ) : (
                           <DialogClose asChild>
                             <Button variant="outline">Close</Button>
                           </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+                        )}
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             ))}
