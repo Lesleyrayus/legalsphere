@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description: 'Dashboard for J. Doe & Associates',
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
