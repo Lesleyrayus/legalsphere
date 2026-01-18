@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { useEffect } from "react";
 
 const formSchema = z.object({
   caseId: z.string().min(1, { message: "Case ID is required." }),
@@ -34,10 +33,6 @@ export function NewCaseForm({ setOpen }: { setOpen: (open: boolean) => void }) {
       description: "",
     },
   });
-  
-  useEffect(() => {
-    form.setValue('caseId', `#${new Date().getFullYear()}-${Math.floor(Math.random() * 900) + 100}`);
-  }, [form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values); // In a real app, you'd do something with this data.
@@ -58,7 +53,7 @@ export function NewCaseForm({ setOpen }: { setOpen: (open: boolean) => void }) {
             <FormItem>
               <FormLabel>Case ID</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder={`#${new Date().getFullYear()}-...`} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
