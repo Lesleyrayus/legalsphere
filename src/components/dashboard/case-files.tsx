@@ -152,6 +152,14 @@ export function CaseFiles() {
                             {file.clientName}
                           </span>
                         </div>
+                        <div className="grid grid-cols-3 items-start gap-4">
+                            <Label htmlFor="case-description" className="text-right mt-1">
+                                Description
+                            </Label>
+                            <p id="case-description" className="col-span-2 text-sm leading-relaxed">
+                                {file.description}
+                            </p>
+                        </div>
                         <div className="grid grid-cols-3 items-center gap-4">
                           <Label htmlFor="status" className="text-right">
                             Status

@@ -308,6 +308,7 @@ export type CaseFile = {
   clientName: string;
   status: 'Active' | 'Closed' | 'Pending';
   lastUpdated: string;
+  description: string;
 };
 
 export const caseFilesData: CaseFile[] = [
@@ -316,36 +317,42 @@ export const caseFilesData: CaseFile[] = [
     clientName: 'Angela Martin',
     status: 'Pending',
     lastUpdated: '1 day ago',
+    description: 'Review of the prenuptial agreement for a high-profile client. Requires attention to detail regarding asset division and confidentiality clauses.',
   },
   {
     id: '#2024-045',
     clientName: 'Michael Scott',
     status: 'Active',
     lastUpdated: '2 hours ago',
+    description: 'Corporate litigation case involving a breach of contract with a major paper supplier. Key evidence includes email correspondence and witness testimonies.',
   },
   {
     id: '#2023-112',
     clientName: 'Dwight Schrute',
     status: 'Active',
     lastUpdated: '5 hours ago',
+    description: 'Real estate dispute over the ownership of a beet farm. Involves complex property laws and historical land deeds.',
   },
   {
     id: '#2024-007',
     clientName: 'Pam Beesly',
     status: 'Closed',
     lastUpdated: '2 days ago',
+    description: 'Intellectual property case for an independent artist. Successfully secured copyright protection for a series of illustrations.',
   },
   {
     id: '#2023-098',
     clientName: 'Jim Halpert',
     status: 'Active',
     lastUpdated: '3 days ago',
+    description: 'Startup consultation for a new sports marketing company. Providing legal advice on business formation, contracts, and compliance.',
   },
   {
     id: '#2022-019',
     clientName: 'Kevin Malone',
     status: 'Closed',
     lastUpdated: '1 month ago',
+    description: 'Handled a small claims court case for a client regarding a dispute with a local venue. The case was settled out of court.',
   },
 ];
 
