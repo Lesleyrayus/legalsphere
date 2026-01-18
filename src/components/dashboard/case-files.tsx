@@ -33,9 +33,11 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { NewCaseForm } from "./new-case-form";
 
 export function CaseFiles() {
   const [files, setFiles] = useState<CaseFile[]>(caseFilesData);
+  const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleCaseFileAction = (
@@ -61,9 +63,22 @@ export function CaseFiles() {
           <CardTitle>Case Files </CardTitle>
           <CardDescription>Manage your firm's case files.</CardDescription>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" /> New Case
-        </Button>
+        <Dialog open={isNewCaseDialogOpen} onOpenChange={setIsNewCaseDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> New Case
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create New Case</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new case file. Click create when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <NewCaseForm setOpen={setIsNewCaseDialogOpen} />
+          </DialogContent>
+        </Dialog>
       </CardHeader>
       <CardContent>
         <Table>
