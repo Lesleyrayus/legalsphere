@@ -1,3 +1,6 @@
+"use client"
+
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -21,6 +24,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
 export function SettingsForm() {
+  const { theme, setTheme } = useTheme()
+
   return (
     <Tabs defaultValue="profile" className="w-full">
       <TabsList className="grid w-full grid-cols-3">
@@ -93,13 +98,17 @@ export function SettingsForm() {
           <CardHeader>
             <CardTitle>Appearance</CardTitle>
             <CardDescription>
-              Customize the look and feel of your dashboard.
+              Customize the look and feel of your dashboard. Your changes are saved automatically.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Theme</Label>
-              <RadioGroup defaultValue="light" className="flex gap-4">
+              <RadioGroup 
+                value={theme} 
+                onValueChange={setTheme} 
+                className="flex gap-4"
+              >
                   <Label htmlFor="r1" className="flex flex-col items-center gap-2 rounded-md border-2 border-muted p-1 hover:border-accent [&:has([data-state=checked])]:border-primary">
                       <RadioGroupItem value="light" id="r1" className="sr-only" />
                       <div className="w-20 h-12 rounded-sm bg-gray-100" />
@@ -113,9 +122,6 @@ export function SettingsForm() {
               </RadioGroup>
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save Changes</Button>
-          </CardFooter>
         </Card>
       </TabsContent>
     </Tabs>
