@@ -247,15 +247,15 @@ export function ChatView() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold truncate">{user.name}</p>
                   </div>
-
-                  <div className="mt-0.5 flex items-center justify-between min-w-0 gap-2">
-                    <p className="flex-1 min-w-0 text-sm text-muted-foreground truncate">
-                      {user.lastMessage}
-                    </p>
-
+                  <div className="mt-0.5 flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-muted-foreground truncate">
+                        {user.lastMessage}
+                      </p>
+                    </div>
                     {user.unreadCount > 0 && (
                       <div className="shrink-0 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-primary-foreground text-xs font-semibold">
                         {user.unreadCount}
