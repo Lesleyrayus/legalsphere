@@ -2,6 +2,11 @@ export type Message = {
   from: "me" | "them";
   text: string;
   time: string;
+  attachment?: {
+    type: "image" | "file";
+    url: string;
+    name: string;
+  };
 };
 
 
