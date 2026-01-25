@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
-import { SendHorizonal, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { chatData, type ChatUser, type Message } from "./data";
 import { cn } from "./lib/utils";
 import { ScrollArea } from "./components/ui/scroll-area";
@@ -77,7 +77,7 @@ export function ChatView() {
             <p className="font-semibold">{activeChat.name}</p>
           </div>
 
-          <ScrollArea className="flex-1 p-4 bg-muted/20">
+          <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
               {activeChat.messages.map((msg, index) => (
                 <div
@@ -116,7 +116,15 @@ export function ChatView() {
                 placeholder="Type your message..."
               />
               <Button type="submit" size="icon">
-                <SendHorizonal className="h-4 w-4" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086L2.279 16.76a.75.75 0 00.95.826l14.5-5.25a.75.75 0 000-1.452l-14.5-5.25z" />
+                </svg>
+                <span className="sr-only">Send message</span>
               </Button>
             </form>
           </div>
