@@ -1,24 +1,61 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "./components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
-import { Search, Paperclip, X, File as FileIcon } from "lucide-react";
+import {
+  Search,
+  Paperclip,
+  X,
+  File as FileIcon,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { chatData, type ChatUser, type Message } from "./data";
 import { cn } from "./lib/utils";
 import { ScrollArea } from "./components/ui/scroll-area";
 import { Badge } from "./components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./components/ui/alert-dialog";
 
 export function ChatView() {
-  const [users] = useState<ChatUser[]>(chatData);
-  const [activeChat, setActiveChat] = useState<ChatUser>(users[0]);
+  const [users, setUsers] = useState<ChatUser[]>(chatData);
+  const [activeChatId, setActiveChatId] = useState<string>(users[0].id);
+  const activeChat = users.find((user) => user.id === activeChatId)!;
+
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(
     null
   );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editingMessage, setEditingMessage] = useState<{
+    index: number;
+    text: string;
+  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -63,11 +100,20 @@ export function ChatView() {
       attachment: newAttachment,
     };
 
-    setActiveChat((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMessage],
-    }));
+    const newUsers = users.map((user) => {
+      if (user.id === activeChatId) {
+        // Also update lastMessage for the user list
+        const updatedUser = {
+          ...user,
+          messages: [...user.messages, newMessage],
+          lastMessage: message || "Attachment",
+        };
+        return updatedUser;
+      }
+      return user;
+    });
 
+    setUsers(newUsers);
     setMessage("");
     setAttachment(null);
     setAttachmentPreview(null);
@@ -75,6 +121,56 @@ export function ChatView() {
       fileInputRef.current.value = "";
     }
   };
+
+  const handleDeleteMessage = (messageIndex: number) => {
+    const newUsers = users.map((user) => {
+      if (user.id === activeChatId) {
+        const newMessages = user.messages.filter(
+          (_, index) => index !== messageIndex
+        );
+        return {
+          ...user,
+          messages: newMessages,
+        };
+      }
+      return user;
+    });
+    setUsers(newUsers);
+  };
+
+  const handleStartEdit = (messageIndex: number) => {
+    const messageToEdit = activeChat.messages[messageIndex];
+    if (messageToEdit.text) {
+      setEditingMessage({ index: messageIndex, text: messageToEdit.text });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessage(null);
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingMessage) return;
+
+    const newUsers = users.map((user) => {
+      if (user.id === activeChatId) {
+        const newMessages = user.messages.map((msg, index) => {
+          if (index === editingMessage.index) {
+            return { ...msg, text: editingMessage.text };
+          }
+          return msg;
+        });
+        return { ...user, messages: newMessages };
+      }
+      return user;
+    });
+    setUsers(newUsers);
+    setEditingMessage(null);
+  };
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Card className="h-[70vh] flex flex-col">
@@ -87,14 +183,19 @@ export function ChatView() {
           <div className="p-4 border-b">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search clients..." className="pl-9" />
+              <Input
+                placeholder="Search clients..."
+                className="pl-9"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
           <ScrollArea className="flex-1">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div
                 key={user.id}
-                onClick={() => setActiveChat(user)}
+                onClick={() => setActiveChatId(user.id)}
                 className={cn(
                   "flex items-center gap-3 p-4 cursor-pointer hover:bg-secondary/50",
                   activeChat.id === user.id && "bg-secondary"
@@ -154,55 +255,140 @@ export function ChatView() {
                     msg.from === "me" ? "justify-end" : "justify-start"
                   )}
                 >
-                  <div
-                    className={cn(
-                      "max-w-xs lg:max-w-md rounded-lg p-3 text-sm",
-                      msg.from === "me"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-card border"
-                    )}
-                  >
-                    {msg.attachment && (
-                      <div className="mb-2">
-                        {msg.attachment.type === "image" ? (
-                          <img
-                            src={msg.attachment.url}
-                            alt={msg.attachment.name}
-                            className="rounded-lg max-w-full h-auto"
-                          />
-                        ) : (
-                          <a
-                            href={msg.attachment.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={cn(
-                              "flex items-center gap-2 p-2 rounded-md",
-                              msg.from === "me"
-                                ? "bg-primary-foreground/10 hover:bg-primary-foreground/20"
-                                : "bg-muted hover:bg-muted/80"
-                            )}
-                          >
-                            <FileIcon className="h-6 w-6" />
-                            <div className="text-sm">
-                              <p className="font-medium truncate">
-                                {msg.attachment.name}
-                              </p>
-                            </div>
-                          </a>
-                        )}
-                      </div>
-                    )}
-                    {msg.text && <p>{msg.text}</p>}
-                    <p
+                  <div className="group relative">
+                    <div
                       className={cn(
-                        "text-xs mt-1",
+                        "max-w-xs lg:max-w-md rounded-lg p-3 text-sm",
                         msg.from === "me"
-                          ? "text-primary-foreground/70"
-                          : "text-muted-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-card border"
                       )}
                     >
-                      {msg.time}
-                    </p>
+                      {msg.attachment && (
+                        <div className="mb-2">
+                          {msg.attachment.type === "image" ? (
+                            <img
+                              src={msg.attachment.url}
+                              alt={msg.attachment.name}
+                              className="rounded-lg max-w-full h-auto"
+                            />
+                          ) : (
+                            <a
+                              href={msg.attachment.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={cn(
+                                "flex items-center gap-2 p-2 rounded-md",
+                                msg.from === "me"
+                                  ? "bg-primary-foreground/10 hover:bg-primary-foreground/20"
+                                  : "bg-muted hover:bg-muted/80"
+                              )}
+                            >
+                              <FileIcon className="h-6 w-6" />
+                              <div className="text-sm">
+                                <p className="font-medium truncate">
+                                  {msg.attachment.name}
+                                </p>
+                              </div>
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      {editingMessage && editingMessage.index === index ? (
+                        <div className="space-y-2">
+                          <Input
+                            value={editingMessage.text}
+                            onChange={(e) =>
+                              setEditingMessage({
+                                ...editingMessage,
+                                text: e.target.value,
+                              })
+                            }
+                            onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
+                            className="bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/50 border-primary-foreground/20"
+                          />
+                          <div className="flex justify-end gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleCancelEdit}
+                              className="h-auto px-2 py-1 text-xs hover:bg-primary-foreground/20"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={handleSaveEdit}
+                              className="h-auto px-2 py-1 text-xs bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                            >
+                              Save
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        msg.text && <p>{msg.text}</p>
+                      )}
+
+                      <p
+                        className={cn(
+                          "text-xs mt-1",
+                          msg.from === "me"
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {msg.time}
+                      </p>
+                    </div>
+
+                    {msg.from === "me" && !editingMessage && (
+                       <AlertDialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-1/2 -translate-y-1/2 -left-10 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onSelect={() => handleStartEdit(index)}
+                              disabled={!msg.text}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <AlertDialogTrigger asChild>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Delete</span>
+                              </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete this message.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteMessage(index)}>
+                                Delete
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
                 </div>
               ))}
@@ -264,6 +450,7 @@ export function ChatView() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message..."
+                autoComplete="off"
               />
               <Button type="submit" size="icon">
                 <svg
