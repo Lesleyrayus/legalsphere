@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Button } from "./components/ui/button";
@@ -100,10 +101,7 @@ export function ChatView() {
     const newMessage: Message = {
       from: "me",
       text: message,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      time: format(new Date(), "p"),
       attachment: newAttachment,
     };
 
@@ -253,7 +251,9 @@ export function ChatView() {
                   <div className="mt-0.5 flex items-center gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-muted-foreground truncate">
-                        {user.lastMessage}
+                        {user.lastMessage.split(" ").length > 3
+                          ? user.lastMessage.split(" ").slice(0, 3).join(" ") + "..."
+                          : user.lastMessage}
                       </p>
                     </div>
                     {user.unreadCount > 0 && (
