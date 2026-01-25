@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { DashboardSidebar } from '@/components/dashboard/sidebar';
 import { DashboardHeader } from '@/components/dashboard/header';
-import { ChatView } from '@/components/chat/chat-view';
+import { ChatView } from '@shared/chat/chat-view';
 
 export default function ChatPage() {
   return (
