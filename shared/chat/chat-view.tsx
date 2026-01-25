@@ -230,15 +230,17 @@ export function ChatView() {
                 </div>
                 <div className="flex-1 overflow-hidden">
                   <p className="font-semibold truncate">{user.name}</p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {user.lastMessage}
-                  </p>
-                </div>
-                {user.unreadCount > 0 && (
-                  <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
-                    {user.unreadCount}
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm text-muted-foreground truncate">
+                      {user.lastMessage}
+                    </p>
+                    {user.unreadCount > 0 && (
+                      <div className="flex-shrink-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                        {user.unreadCount}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </ScrollArea>
