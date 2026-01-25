@@ -7,6 +7,7 @@ export type Message = {
     url: string;
     name: string;
   };
+  edited?: boolean;
 };
 
 

@@ -43,8 +43,10 @@ import {
 
 export function ChatView() {
   const [users, setUsers] = useState<ChatUser[]>(chatData);
-  const [activeChatId, setActiveChatId] = useState<string>(users[0].id);
-  const activeChat = users.find((user) => user.id === activeChatId)!;
+  const [activeChatId, setActiveChatId] = useState<string | null>(
+    users.length > 0 ? users[0].id : null
+  );
+  const activeChat = users.find((user) => user.id === activeChatId);
 
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -62,7 +64,7 @@ export function ChatView() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeChat.messages]);
+  }, [activeChat?.messages]);
 
   const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -137,8 +139,16 @@ export function ChatView() {
     });
     setUsers(newUsers);
   };
+  
+  const handleDeleteChat = () => {
+    if (!activeChatId) return;
+    const newUsers = users.filter((user) => user.id !== activeChatId);
+    setUsers(newUsers);
+    setActiveChatId(newUsers.length > 0 ? newUsers[0].id : null);
+  };
 
   const handleStartEdit = (messageIndex: number) => {
+    if (!activeChat) return;
     const messageToEdit = activeChat.messages[messageIndex];
     if (messageToEdit.text) {
       setEditingMessage({ index: messageIndex, text: messageToEdit.text });
@@ -156,7 +166,7 @@ export function ChatView() {
       if (user.id === activeChatId) {
         const newMessages = user.messages.map((msg, index) => {
           if (index === editingMessage.index) {
-            return { ...msg, text: editingMessage.text };
+            return { ...msg, text: editingMessage.text, edited: true };
           }
           return msg;
         });
@@ -198,7 +208,7 @@ export function ChatView() {
                 onClick={() => setActiveChatId(user.id)}
                 className={cn(
                   "flex items-center gap-3 p-4 cursor-pointer hover:bg-secondary/50",
-                  activeChat.id === user.id && "bg-secondary"
+                  activeChat?.id === user.id && "bg-secondary"
                 )}
               >
                 <div className="relative">
@@ -233,248 +243,295 @@ export function ChatView() {
 
         {/* Chat Window */}
         <div className="flex-1 flex flex-col h-full">
-          <div className="flex items-center gap-3 p-4 border-b">
-             <div className="relative">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={activeChat.avatar}
-                    alt={activeChat.name}
-                    data-ai-hint="person face"
-                  />
-                  <AvatarFallback>
-                    {activeChat.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                {activeChat.online && (
+          {activeChat ? (
+            <>
+              <div className="flex items-center gap-3 p-4 border-b">
+                <div className="relative">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={activeChat.avatar}
+                      alt={activeChat.name}
+                      data-ai-hint="person face"
+                    />
+                    <AvatarFallback>
+                      {activeChat.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  {activeChat.online && (
                     <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
-                )}
-            </div>
-            <p className="font-semibold">{activeChat.name}</p>
-          </div>
-
-          <ScrollArea className="flex-1 p-4 bg-background/90">
-            <div className="space-y-4">
-              {activeChat.messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    "flex",
-                    msg.from === "me" ? "justify-end" : "justify-start"
                   )}
-                >
-                  <div className="group relative">
-                    <div
-                      className={cn(
-                        "max-w-xs lg:max-w-md rounded-lg p-3 text-sm",
-                        msg.from === "me"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-card border"
-                      )}
-                    >
-                      {msg.attachment && (
-                        <div className="mb-2">
-                          {msg.attachment.type === "image" ? (
-                            <img
-                              src={msg.attachment.url}
-                              alt={msg.attachment.name}
-                              className="rounded-lg max-w-full h-auto"
-                            />
-                          ) : (
-                            <a
-                              href={msg.attachment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={cn(
-                                "flex items-center gap-2 p-2 rounded-md",
-                                msg.from === "me"
-                                  ? "bg-primary-foreground/10 hover:bg-primary-foreground/20"
-                                  : "bg-muted hover:bg-muted/80"
-                              )}
-                            >
-                              <FileIcon className="h-6 w-6" />
-                              <div className="text-sm">
-                                <p className="font-medium truncate">
-                                  {msg.attachment.name}
-                                </p>
-                              </div>
-                            </a>
-                          )}
-                        </div>
-                      )}
-
-                      {editingMessage && editingMessage.index === index ? (
-                        <div className="space-y-2">
-                          <Input
-                            value={editingMessage.text}
-                            onChange={(e) =>
-                              setEditingMessage({
-                                ...editingMessage,
-                                text: e.target.value,
-                              })
-                            }
-                            onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
-                            className="bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/50 border-primary-foreground/20"
-                          />
-                          <div className="flex justify-end gap-1">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={handleCancelEdit}
-                              className="h-auto px-2 py-1 text-xs hover:bg-primary-foreground/20"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              size="sm"
-                              onClick={handleSaveEdit}
-                              className="h-auto px-2 py-1 text-xs bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        msg.text && <p>{msg.text}</p>
-                      )}
-
-                      <p
-                        className={cn(
-                          "text-xs mt-1",
-                          msg.from === "me"
-                            ? "text-primary-foreground/70"
-                            : "text-muted-foreground"
-                        )}
-                      >
-                        {msg.time}
-                      </p>
-                    </div>
-
-                    {msg.from === "me" && !editingMessage && (
-                       <AlertDialog>
+                </div>
+                <p className="font-semibold">{activeChat.name}</p>
+                <div className="ml-auto">
+                    <AlertDialog>
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="absolute top-1/2 -translate-y-1/2 -left-10 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
+                            <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-5 w-5" />
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onSelect={() => handleStartEdit(index)}
-                              disabled={!msg.text}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              <span>Edit</span>
-                            </DropdownMenuItem>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
                             <AlertDialogTrigger asChild>
-                              <DropdownMenuItem
-                                onSelect={(e) => e.preventDefault()}
-                                className="text-destructive focus:text-destructive"
-                              >
+                                <DropdownMenuItem className="text-destructive focus:text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
-                                <span>Delete</span>
-                              </DropdownMenuItem>
+                                Delete Chat
+                                </DropdownMenuItem>
                             </AlertDialogTrigger>
-                          </DropdownMenuContent>
+                            </DropdownMenuContent>
                         </DropdownMenu>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete this message.
-                                </AlertDialogDescription>
+                            <AlertDialogTitle>Delete this chat?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This will permanently delete the entire chat history with {activeChat.name}. This action cannot be undone.
+                            </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDeleteMessage(index)}>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDeleteChat}>
                                 Delete
-                                </AlertDialogAction>
+                            </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
-                      </AlertDialog>
-                    )}
-                  </div>
+                    </AlertDialog>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-
-          {attachment && (
-            <div className="p-2 border-t flex items-center justify-between bg-muted/50">
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                {attachmentPreview ? (
-                  <img
-                    src={attachmentPreview}
-                    alt="Preview"
-                    className="h-10 w-10 object-cover rounded-md"
-                  />
-                ) : (
-                  <FileIcon className="h-8 w-8" />
-                )}
-                <span className="truncate max-w-xs">{attachment.name}</span>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  setAttachment(null);
-                  setAttachmentPreview(null);
-                }}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+
+              <ScrollArea className="flex-1 p-4 bg-background/90">
+                <div className="space-y-4">
+                  {activeChat.messages.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "flex",
+                        msg.from === "me" ? "justify-end" : "justify-start"
+                      )}
+                    >
+                      <div className="group relative">
+                        <div
+                          className={cn(
+                            "max-w-xs lg:max-w-md rounded-lg p-3 text-sm",
+                            msg.from === "me"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-card border"
+                          )}
+                        >
+                          {msg.attachment && (
+                            <div className="mb-2">
+                              {msg.attachment.type === "image" ? (
+                                <img
+                                  src={msg.attachment.url}
+                                  alt={msg.attachment.name}
+                                  className="rounded-lg max-w-full h-auto"
+                                />
+                              ) : (
+                                <a
+                                  href={msg.attachment.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={cn(
+                                    "flex items-center gap-2 p-2 rounded-md",
+                                    msg.from === "me"
+                                      ? "bg-primary-foreground/10 hover:bg-primary-foreground/20"
+                                      : "bg-muted hover:bg-muted/80"
+                                  )}
+                                >
+                                  <FileIcon className="h-6 w-6" />
+                                  <div className="text-sm">
+                                    <p className="font-medium truncate">
+                                      {msg.attachment.name}
+                                    </p>
+                                  </div>
+                                </a>
+                              )}
+                            </div>
+                          )}
+
+                          {editingMessage &&
+                          editingMessage.index === index ? (
+                            <div className="space-y-2">
+                              <Input
+                                value={editingMessage.text}
+                                onChange={(e) =>
+                                  setEditingMessage({
+                                    ...editingMessage,
+                                    text: e.target.value,
+                                  })
+                                }
+                                onKeyDown={(e) =>
+                                  e.key === "Enter" && handleSaveEdit()
+                                }
+                                className="bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/50 border-primary-foreground/20"
+                              />
+                              <div className="flex justify-end gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={handleCancelEdit}
+                                  className="h-auto px-2 py-1 text-xs hover:bg-primary-foreground/20"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={handleSaveEdit}
+                                  className="h-auto px-2 py-1 text-xs bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            msg.text && <p>{msg.text}</p>
+                          )}
+                          <div className={cn("flex items-center gap-1.5 justify-end text-xs mt-1", msg.from === "me" ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                              {msg.edited && <span>edited</span>}
+                            <span>{msg.time}</span>
+                          </div>
+                        </div>
+
+                        {msg.from === "me" && !editingMessage && (
+                          <AlertDialog>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute top-1/2 -translate-y-1/2 -left-10 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onSelect={() => handleStartEdit(index)}
+                                  disabled={!msg.text}
+                                >
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  <span>Edit</span>
+                                </DropdownMenuItem>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem
+                                    onSelect={(e) => e.preventDefault()}
+                                    className="text-destructive focus:text-destructive"
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <span>Delete</span>
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you absolutely sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete this message.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteMessage(index)}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+
+              {attachment && (
+                <div className="p-2 border-t flex items-center justify-between bg-muted/50">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                    {attachmentPreview ? (
+                      <img
+                        src={attachmentPreview}
+                        alt="Preview"
+                        className="h-10 w-10 object-cover rounded-md"
+                      />
+                    ) : (
+                      <FileIcon className="h-8 w-8" />
+                    )}
+                    <span className="truncate max-w-xs">
+                      {attachment.name}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setAttachment(null);
+                      setAttachmentPreview(null);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+
+              <div className="p-4 border-t">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Paperclip className="h-5 w-5" />
+                    <span className="sr-only">Attach file</span>
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleAttachment}
+                    className="hidden"
+                  />
+                  <Input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    autoComplete="off"
+                  />
+                  <Button type="submit" size="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086L2.279 16.76a.75.75 0 00.95.826l14.5-5.25a.75.75 0 000-1.452l-14.5-5.25z" />
+                    </svg>
+                    <span className="sr-only">Send message</span>
+                  </Button>
+                </form>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-1 items-center justify-center bg-muted/20">
+                <div className="text-center">
+                    <p className="text-lg font-medium">No chat selected</p>
+                    <p className="text-sm text-muted-foreground">Select a client from the list to start a conversation.</p>
+                </div>
             </div>
           )}
-
-          <div className="p-4 border-t">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-              className="flex items-center gap-2"
-            >
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Paperclip className="h-5 w-5" />
-                <span className="sr-only">Attach file</span>
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleAttachment}
-                className="hidden"
-              />
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message..."
-                autoComplete="off"
-              />
-              <Button type="submit" size="icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086L2.279 16.76a.75.75 0 00.95.826l14.5-5.25a.75.75 0 000-1.452l-14.5-5.25z" />
-                </svg>
-                <span className="sr-only">Send message</span>
-              </Button>
-            </form>
-          </div>
         </div>
       </CardContent>
     </Card>
