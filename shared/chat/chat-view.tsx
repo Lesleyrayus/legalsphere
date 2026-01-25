@@ -16,9 +16,16 @@ export function ChatView() {
   const [activeChat, setActiveChat] = useState<ChatUser>(users[0]);
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
-  const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
+  const [attachmentPreview, setAttachmentPreview] = useState<string | null>(
+    null
+  );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [activeChat.messages]);
 
   const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -55,7 +62,7 @@ export function ChatView() {
       }),
       attachment: newAttachment,
     };
-    
+
     setActiveChat((prev) => ({
       ...prev,
       messages: [...prev.messages, newMessage],
@@ -64,8 +71,8 @@ export function ChatView() {
     setMessage("");
     setAttachment(null);
     setAttachmentPreview(null);
-    if(fileInputRef.current) {
-        fileInputRef.current.value = "";
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -168,8 +175,11 @@ export function ChatView() {
                             href={msg.attachment.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={cn("flex items-center gap-2 p-2 rounded-md", 
-                                msg.from === 'me' ? 'bg-primary-foreground/10 hover:bg-primary-foreground/20' : 'bg-muted hover:bg-muted/80'
+                            className={cn(
+                              "flex items-center gap-2 p-2 rounded-md",
+                              msg.from === "me"
+                                ? "bg-primary-foreground/10 hover:bg-primary-foreground/20"
+                                : "bg-muted hover:bg-muted/80"
                             )}
                           >
                             <FileIcon className="h-6 w-6" />
@@ -196,22 +206,34 @@ export function ChatView() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
-          
-           {attachment && (
+
+          {attachment && (
             <div className="p-2 border-t flex items-center justify-between bg-muted/50">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    {attachmentPreview ? (
-                        <img src={attachmentPreview} alt="Preview" className="h-10 w-10 object-cover rounded-md" />
-                    ) : (
-                        <FileIcon className="h-8 w-8" />
-                    )}
-                    <span className="truncate max-w-xs">{attachment.name}</span>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => { setAttachment(null); setAttachmentPreview(null); }}>
-                    <X className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                {attachmentPreview ? (
+                  <img
+                    src={attachmentPreview}
+                    alt="Preview"
+                    className="h-10 w-10 object-cover rounded-md"
+                  />
+                ) : (
+                  <FileIcon className="h-8 w-8" />
+                )}
+                <span className="truncate max-w-xs">{attachment.name}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setAttachment(null);
+                  setAttachmentPreview(null);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
           )}
 
