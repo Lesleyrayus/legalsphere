@@ -22,7 +22,6 @@ import {
 import { chatData, type ChatUser, type Message } from "./data";
 import { cn } from "./lib/utils";
 import { ScrollArea } from "./components/ui/scroll-area";
-import { Badge } from "./components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -235,7 +234,11 @@ export function ChatView() {
                     {user.lastMessage}
                   </p>
                 </div>
-                {user.unreadCount > 0 && <Badge>{user.unreadCount}</Badge>}
+                {user.unreadCount > 0 && (
+                  <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                    {user.unreadCount}
+                  </div>
+                )}
               </div>
             ))}
           </ScrollArea>
