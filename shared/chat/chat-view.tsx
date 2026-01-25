@@ -230,8 +230,8 @@ export function ChatView() {
                 </div>
                 <div className="flex-1 overflow-hidden">
                   <p className="font-semibold truncate">{user.name}</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm text-muted-foreground truncate">
+                  <div className="flex items-center gap-2">
+                    <p className="flex-1 text-sm text-muted-foreground truncate">
                       {user.lastMessage}
                     </p>
                     {user.unreadCount > 0 && (
