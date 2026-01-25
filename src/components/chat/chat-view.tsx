@@ -6,12 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SendHorizonal, Search } from "lucide-react";
-import { chatData, type ChatUser, type Message } from "@/lib/data";
+import { chatData, type ChatUser, type Message } from "./data";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
-export function Chat() {
+export function ChatView() {
   const [users] = useState<ChatUser[]>(chatData);
   const [activeChat, setActiveChat] = useState<ChatUser>(users[0]);
   const [message, setMessage] = useState("");

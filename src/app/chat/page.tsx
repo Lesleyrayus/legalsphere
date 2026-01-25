@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { DashboardSidebar } from '@/components/dashboard/sidebar';
 import { DashboardHeader } from '@/components/dashboard/header';
-import { Chat } from '@/components/dashboard/chat';
+import { ChatView } from '@/components/chat/chat-view';
 
 export default function ChatPage() {
   return (
@@ -10,7 +10,7 @@ export default function ChatPage() {
       <SidebarInset className="bg-slate-50/50">
         <DashboardHeader page="Chat" />
         <main className="p-4 lg:p-8">
-          <Chat />
+          <ChatView />
         </main>
       </SidebarInset>
     </SidebarProvider>
