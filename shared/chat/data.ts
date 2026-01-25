@@ -4,6 +4,7 @@ export type Message = {
   time: string;
 };
 
+
 export type ChatUser = {
   id: string;
   name: string;
