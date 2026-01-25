@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
 import { SendHorizonal, Search } from "lucide-react";
 import { chatData, type ChatUser, type Message } from "./data";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "./lib/utils";
+import { ScrollArea } from "./components/ui/scroll-area";
+import { Badge } from "./components/ui/badge";
 
 export function ChatView() {
   const [users] = useState<ChatUser[]>(chatData);
