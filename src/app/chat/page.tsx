@@ -3,6 +3,7 @@ import { DashboardSidebar } from '@/components/dashboard/sidebar';
 import { DashboardHeader } from '@/components/dashboard/header';
 import { ChatView } from '@shared/chat/chat-view';
 
+
 export default function ChatPage() {
   return (
     <SidebarProvider>
