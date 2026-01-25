@@ -16,6 +16,7 @@ export type ChatUser = {
   avatar: string;
   lastMessage: string;
   unreadCount: number;
+  online: boolean;
   messages: Message[];
 };
 
@@ -26,6 +27,7 @@ export const chatData: ChatUser[] = [
         avatar: 'https://picsum.photos/seed/lawyer1/100/100',
         lastMessage: 'I need to declare bankruptcy.',
         unreadCount: 2,
+        online: true,
         messages: [
             { from: 'them', text: 'Hey, I have a quick question about our case.', time: '10:40 AM' },
             { from: 'me', text: 'Of course, how can I help?', time: '10:41 AM' },
@@ -38,6 +40,7 @@ export const chatData: ChatUser[] = [
         avatar: 'https://picsum.photos/seed/lawyer2/100/100',
         lastMessage: 'Perfect, see you then.',
         unreadCount: 0,
+        online: false,
         messages: [
             { from: 'me', text: 'Let\'s meet tomorrow at 10am.', time: 'Yesterday' },
             { from: 'them', text: 'Perfect, see you then.', time: 'Yesterday' },
@@ -49,6 +52,7 @@ export const chatData: ChatUser[] = [
         avatar: 'https://picsum.photos/seed/lawyer3/100/100',
         lastMessage: 'Can you send me the documents?',
         unreadCount: 1,
+        online: true,
         messages: [
             { from: 'them', text: 'Can you send me the documents?', time: '9:15 AM' },
         ],
@@ -59,6 +63,7 @@ export const chatData: ChatUser[] = [
         avatar: 'https://picsum.photos/seed/lawyer4/100/100',
         lastMessage: 'Got it, thanks!',
         unreadCount: 0,
+        online: false,
         messages: [
             { from: 'me', text: 'Here is the contract draft.', time: 'Yesterday' },
             { from: 'them', text: 'Got it, thanks!', time: 'Yesterday' },

@@ -201,19 +201,24 @@ export function ChatView() {
                   activeChat.id === user.id && "bg-secondary"
                 )}
               >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={user.avatar}
-                    alt={user.name}
-                    data-ai-hint="person face"
-                  />
-                  <AvatarFallback>
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={user.avatar}
+                      alt={user.name}
+                      data-ai-hint="person face"
+                    />
+                    <AvatarFallback>
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  {user.online && (
+                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                  )}
+                </div>
                 <div className="flex-1 overflow-hidden">
                   <p className="font-semibold truncate">{user.name}</p>
                   <p className="text-sm text-muted-foreground truncate">
@@ -229,19 +234,24 @@ export function ChatView() {
         {/* Chat Window */}
         <div className="flex-1 flex flex-col h-full">
           <div className="flex items-center gap-3 p-4 border-b">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={activeChat.avatar}
-                alt={activeChat.name}
-                data-ai-hint="person face"
-              />
-              <AvatarFallback>
-                {activeChat.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+             <div className="relative">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage
+                    src={activeChat.avatar}
+                    alt={activeChat.name}
+                    data-ai-hint="person face"
+                  />
+                  <AvatarFallback>
+                    {activeChat.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                {activeChat.online && (
+                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                )}
+            </div>
             <p className="font-semibold">{activeChat.name}</p>
           </div>
 
