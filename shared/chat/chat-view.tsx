@@ -19,11 +19,6 @@ export function ChatView() {
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeChat.messages]);
 
   const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -79,9 +74,9 @@ export function ChatView() {
       <CardHeader>
         <CardTitle>Client Chat</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-0 overflow-hidden">
+      <CardContent className="flex-1 flex flex-row p-0 overflow-hidden">
         {/* User List */}
-        <div className="md:col-span-1 lg:col-span-1 border-r flex flex-col">
+        <div className="w-[280px] border-r flex flex-col">
           <div className="p-4 border-b">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -124,7 +119,7 @@ export function ChatView() {
         </div>
 
         {/* Chat Window */}
-        <div className="md:col-span-2 lg:col-span-3 flex flex-col h-full">
+        <div className="flex-1 flex flex-col h-full">
           <div className="flex items-center gap-3 p-4 border-b">
             <Avatar className="h-10 w-10">
               <AvatarImage
@@ -201,7 +196,6 @@ export function ChatView() {
                   </div>
                 </div>
               ))}
-               <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
           
