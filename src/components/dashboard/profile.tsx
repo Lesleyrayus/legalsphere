@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import { Edit, Mail, Phone, MapPin, BadgeCheck, FileText } from "lucide-react";
+import { Edit, Mail, Phone, MapPin, BadgeCheck, FileText, Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 type ProfileData = {
@@ -173,7 +173,7 @@ export function Profile() {
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold">Contact Information</h3>
+                            <h3 className="text-lg font-semibold flex items-center gap-2"><Mail className="h-5 w-5 text-primary" />Contact Information</h3>
                             <Separator className="my-2" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ export function Profile() {
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold">Professional Details</h3>
+                            <h3 className="text-lg font-semibold flex items-center gap-2"><Briefcase className="h-5 w-5 text-primary" />Professional Details</h3>
                              <Separator className="my-2" />
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div className="flex items-center gap-3">
