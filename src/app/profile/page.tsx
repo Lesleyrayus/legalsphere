@@ -10,9 +10,7 @@ export default function ProfilePage() {
       <SidebarInset className="bg-slate-50/50">
         <DashboardHeader page="Profile" />
         <main className="p-4 lg:p-8">
-          <div className="max-w-2xl mx-auto">
-            <Profile />
-          </div>
+          <Profile />
         </main>
       </SidebarInset>
     </SidebarProvider>
