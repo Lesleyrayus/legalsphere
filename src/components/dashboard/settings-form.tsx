@@ -31,11 +31,24 @@ export function SettingsForm() {
   const { theme, setTheme } = useTheme()
   const { toast } = useToast()
 
+  const [communicationEmails, setCommunicationEmails] = React.useState(true);
+  const [marketingEmails, setMarketingEmails] = React.useState(false);
+  const [language, setLanguage] = React.useState("en");
+  const [timezone, setTimezone] = React.useState("est");
+
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
   const handleSave = () => {
+    // In a real app, you would save these settings to a backend.
+    console.log({
+      theme,
+      communicationEmails,
+      marketingEmails,
+      language,
+      timezone,
+    })
     toast({
       title: "Settings Saved",
       description: "Your new settings have been successfully applied.",
@@ -172,7 +185,10 @@ export function SettingsForm() {
                   Receive emails about new messages, and case updates.
                 </p>
               </div>
-              <Switch defaultChecked />
+              <Switch
+                checked={communicationEmails}
+                onCheckedChange={setCommunicationEmails}
+              />
             </div>
             <div className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
@@ -181,7 +197,10 @@ export function SettingsForm() {
                   Receive emails about new products, features, and promotions.
                 </p>
               </div>
-              <Switch />
+              <Switch
+                checked={marketingEmails}
+                onCheckedChange={setMarketingEmails}
+              />
             </div>
           </div>
         </div>
@@ -197,7 +216,7 @@ export function SettingsForm() {
           <div className="grid grid-cols-1 gap-4 pl-7 md:grid-cols-2">
             <div className="space-y-2">
               <Label>Language</Label>
-              <Select defaultValue="en">
+              <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
@@ -210,7 +229,7 @@ export function SettingsForm() {
             </div>
             <div className="space-y-2">
               <Label>Timezone</Label>
-              <Select defaultValue="est">
+              <Select value={timezone} onValueChange={setTimezone}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select timezone" />
                 </SelectTrigger>
