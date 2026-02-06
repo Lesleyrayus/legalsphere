@@ -365,3 +365,5 @@ export const analyticsData = {
      { name: 'Real Estate', value: 200, fill: 'hsl(var(--chart-4))' },
   ]
 };
+
+
