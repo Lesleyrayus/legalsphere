@@ -1,15 +1,15 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { DashboardSidebar } from '@/components/dashboard/sidebar';
-import { DashboardHeader } from '@/components/dashboard/header';
-import { Bookings } from '@/components/dashboard/bookings';
+import { LawyerDashboardSidebar } from '@/components/lawyer_dashboard/sidebar';
+import { LawyerDashboardHeader } from '@/components/lawyer_dashboard/header';
+import { Bookings } from '@/components/lawyer_dashboard/bookings';
 
 export default function BookingsPage() {
   return (
     <SidebarProvider>
-      <DashboardSidebar />
+      <LawyerDashboardSidebar />
       
         <SidebarInset className="bg-slate-50/50">
-          <DashboardHeader page="Bookings" />
+          <LawyerDashboardHeader page="Bookings" />
           <main className="p-4 lg:p-8">
             <Bookings />
           </main>

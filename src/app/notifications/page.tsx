@@ -1,15 +1,15 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { DashboardSidebar } from '@/components/dashboard/sidebar';
-import { DashboardHeader } from '@/components/dashboard/header';
-import { Notifications } from '@/components/dashboard/notifications';
+import { LawyerDashboardSidebar } from '@/components/lawyer_dashboard/sidebar';
+import { LawyerDashboardHeader } from '@/components/lawyer_dashboard/header';
+import { Notifications } from '@/components/lawyer_dashboard/notifications';
 
 export default function NotificationsPage() {
   return (
     <SidebarProvider>
-      <DashboardSidebar />
+      <LawyerDashboardSidebar />
       {/* SidebarInset handles the margin automatically */}
       <SidebarInset className="bg-slate-50/50">
-        <DashboardHeader page="Notifications" />
+        <LawyerDashboardHeader page="Notifications" />
         <main className="p-4 lg:p-8">
           <Notifications />
         </main>
