@@ -26,12 +26,6 @@ export function Bookings() {
                     mode="single"
                     selected={date}
                     onSelect={setDate}
-                    className="p-0"
-                    classNames={{
-                        head_cell: 'w-full',
-                        cell: 'w-full',
-                        row: 'flex w-full mt-2',
-                    }}
                     modifiers={{ booked: bookedDays }}
                     modifiersStyles={{
                         booked: {
@@ -54,13 +48,13 @@ export function Bookings() {
                 Appointments for {date ? format(date, "MMMM d, yyyy") : "All Upcoming"}
             </CardTitle>
             <CardDescription>
-                {date && selectedDayBookings.length > 0 ? `You have ${selectedDayBookings.length} appointment(s) on this day.` : ``}
+                {date && selectedDayBookings.length > 0 ? `You have ${selectedDayBookings.length} appointment(s) on this day.` : ''}
                 {date && selectedDayBookings.length === 0 && 'No appointments for this day.'}
                 {!date && 'Select a day to see appointments.'}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
-            {selectedDayBookings.length > 0 ? (
+            {date && selectedDayBookings.length > 0 ? (
                 <Table>
                 <TableBody>
                     {selectedDayBookings.map((booking: Booking) => (
