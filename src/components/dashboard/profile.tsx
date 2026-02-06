@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, ChangeEvent } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Edit, Mail, Phone, MapPin, BadgeCheck, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProfileData = {
   name: string;
@@ -121,126 +120,99 @@ export function Profile() {
         </div>
         
         {/* Profile Content */}
-        <Tabs defaultValue="overview">
-            <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="account">Account Settings</TabsTrigger>
-                <TabsTrigger value="security">Security</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="mt-6">
-                <Card>
-                    <CardContent className="p-6">
-                        {isEditing ? (
-                             <form className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name">Full Legal Name</Label>
-                                        <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="title">Title / Occupation</Label>
-                                        <Input id="title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address</Label>
-                                        <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">Phone Number</Label>
-                                        <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
-                                    </div>
-                                     <div className="space-y-2">
-                                        <Label htmlFor="address">Residential Address</Label>
-                                        <Input id="address" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} />
-                                    </div>
-                                     <div className="space-y-2">
-                                        <Label htmlFor="barId">Bar ID</Label>
-                                        <Input id="barId" value={formData.barId} onChange={(e) => setFormData({...formData, barId: e.target.value})} />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="bio">Biography</Label>
-                                    <Textarea id="bio" placeholder="Tell us a little bit about yourself" className="min-h-[120px]" value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})}/>
-                                </div>
-                                 <div className="space-y-2">
-                                    <Label>Practice Areas</Label>
-                                    <Input placeholder="Corporate Law, Litigation..." value={formData.practiceAreas.join(', ')} onChange={(e) => setFormData({...formData, practiceAreas: e.target.value.split(',').map(s => s.trim())})} />
-                                    <p className="text-xs text-muted-foreground">Separate areas with a comma.</p>
-                                </div>
-                            </form>
-                        ) : (
-                            <div className="space-y-8">
-                                <div>
-                                    <h3 className="text-lg font-semibold flex items-center gap-2"><FileText className="h-5 w-5" /> About</h3>
-                                    <Separator className="my-2" />
-                                    <p className="text-muted-foreground leading-relaxed">{profile.bio}</p>
-                                </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Personal Information</CardTitle>
+                <CardDescription>Manage your public and professional details.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                {isEditing ? (
+                     <form className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Full Legal Name</Label>
+                                <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Title / Occupation</Label>
+                                <Input id="title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">Phone Number</Label>
+                                <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="address">Residential Address</Label>
+                                <Input id="address" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} />
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="barId">Bar ID</Label>
+                                <Input id="barId" value={formData.barId} onChange={(e) => setFormData({...formData, barId: e.target.value})} />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="bio">Biography</Label>
+                            <Textarea id="bio" placeholder="Tell us a little bit about yourself" className="min-h-[120px]" value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})}/>
+                        </div>
+                         <div className="space-y-2">
+                            <Label>Practice Areas</Label>
+                            <Input placeholder="Corporate Law, Litigation..." value={formData.practiceAreas.join(', ')} onChange={(e) => setFormData({...formData, practiceAreas: e.target.value.split(',').map(s => s.trim())})} />
+                            <p className="text-xs text-muted-foreground">Separate areas with a comma.</p>
+                        </div>
+                    </form>
+                ) : (
+                    <div className="space-y-8">
+                        <div>
+                            <h3 className="text-lg font-semibold flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> About</h3>
+                            <Separator className="my-2" />
+                            <p className="text-muted-foreground leading-relaxed">{profile.bio}</p>
+                        </div>
 
-                                <div>
-                                    <h3 className="text-lg font-semibold">Contact Information</h3>
-                                    <Separator className="my-2" />
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                        <div className="flex items-center gap-3">
-                                            <Mail className="h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Phone className="h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.phone}</span>
-                                        </div>
-                                         <div className="flex items-center gap-3 col-span-full">
-                                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.address}</span>
-                                        </div>
-                                    </div>
+                        <div>
+                            <h3 className="text-lg font-semibold">Contact Information</h3>
+                            <Separator className="my-2" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="h-4 w-4 text-muted-foreground" />
+                                    <span>{profile.email}</span>
                                 </div>
+                                <div className="flex items-center gap-3">
+                                    <Phone className="h-4 w-4 text-muted-foreground" />
+                                    <span>{profile.phone}</span>
+                                </div>
+                                 <div className="flex items-center gap-3 col-span-full">
+                                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                                    <span>{profile.address}</span>
+                                </div>
+                            </div>
+                        </div>
 
-                                <div>
-                                    <h3 className="text-lg font-semibold">Professional Details</h3>
-                                     <Separator className="my-2" />
-                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                        <div className="flex items-center gap-3">
-                                            <BadgeCheck className="h-4 w-4 text-muted-foreground" />
-                                            <span>Bar ID: <span className="font-mono bg-muted px-2 py-1 rounded-md">{profile.barId}</span></span>
-                                        </div>
-                                        <div className="col-span-full">
-                                            <p className="mb-2">Practice Areas:</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {profile.practiceAreas.map(area => (
-                                                    <Badge key={area} variant="secondary">{area}</Badge>
-                                                ))}
-                                            </div>
-                                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold">Professional Details</h3>
+                             <Separator className="my-2" />
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className="flex items-center gap-3">
+                                    <BadgeCheck className="h-4 w-4 text-muted-foreground" />
+                                    <span>Bar ID: <span className="font-mono bg-muted px-2 py-1 rounded-md">{profile.barId}</span></span>
+                                </div>
+                                <div className="col-span-full">
+                                    <p className="mb-2">Practice Areas:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {profile.practiceAreas.map(area => (
+                                            <Badge key={area} variant="secondary">{area}</Badge>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
-            </TabsContent>
-            <TabsContent value="account">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Account Settings</CardTitle>
-                        <CardDescription>Manage your account preferences.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground">Account settings will be available here.</p>
-                    </CardContent>
-                </Card>
-            </TabsContent>
-             <TabsContent value="security">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Security</CardTitle>
-                        <CardDescription>Update your password and security settings.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                         <p className="text-sm text-muted-foreground">Security settings will be available here.</p>
-                    </CardContent>
-                </Card>
-            </TabsContent>
-        </Tabs>
+                        </div>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     </div>
   );
 }
