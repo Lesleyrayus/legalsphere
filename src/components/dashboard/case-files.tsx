@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import {
   Card,
@@ -19,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, X, Check } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { caseFilesData, type CaseFile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import {
@@ -33,29 +32,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { NewCaseForm } from "./new-case-form";
 
 export function CaseFiles() {
-  const [files, setFiles] = useState<CaseFile[]>(caseFilesData);
   const [isNewCaseDialogOpen, setIsNewCaseDialogOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleCaseFileAction = (
-    fileId: string,
-    action: "Accepted" | "Denied"
-  ) => {
-    const newStatus = action === "Accepted" ? "Active" : "Closed";
-    setFiles((prevFiles) =>
-      prevFiles.map((file) =>
-        file.id === fileId ? { ...file, status: newStatus } : file
-      )
-    );
-    toast({
-      title: `Case ${action}`,
-      description: `You have ${action.toLowerCase()} case ${fileId}. The status is now "${newStatus}".`,
-    });
-  };
 
   return (
     <Card>
@@ -93,7 +73,7 @@ export function CaseFiles() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {files.map((file: CaseFile) => (
+            {caseFilesData.map((file: CaseFile) => (
               <TableRow key={file.id}>
                 <TableCell className="font-medium">{file.id}</TableCell>
                 <TableCell>{file.clientName}</TableCell>
@@ -198,35 +178,9 @@ export function CaseFiles() {
                         </div>
                       </div>
                       <DialogFooter>
-                        {file.status === "Pending" ? (
-                          <>
-                            <DialogClose asChild>
-                              <Button
-                                variant="outline"
-                                onClick={() =>
-                                  handleCaseFileAction(file.id, "Denied")
-                                }
-                              >
-                                <X className="h-4 w-4 mr-1" />
-                                Deny
-                              </Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-                              <Button
-                                onClick={() =>
-                                  handleCaseFileAction(file.id, "Accepted")
-                                }
-                              >
-                                <Check className="h-4 w-4 mr-1" />
-                                Accept
-                              </Button>
-                            </DialogClose>
-                          </>
-                        ) : (
-                          <DialogClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DialogClose>
-                        )}
+                        <DialogClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DialogClose>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
