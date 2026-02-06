@@ -1,6 +1,5 @@
 "use client"
 
-
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,25 +20,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
+import { Separator } from "@/components/ui/separator"
+import { Sun, Moon, Laptop, User, Building, Palette } from "lucide-react"
 
 export function SettingsForm() {
   const { theme, setTheme } = useTheme()
+  const { toast } = useToast();
+
+  const handleSaveChanges = (section: string) => {
+      toast({
+          title: "Settings Saved",
+          description: `Your ${section} settings have been updated.`
+      })
+  }
 
   return (
-    <Tabs defaultValue="profile" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="profile">Profile</TabsTrigger>
-        <TabsTrigger value="workspace">Workspace</TabsTrigger>
-        <TabsTrigger value="appearance">Appearance</TabsTrigger>
-      </TabsList>
-      <TabsContent value="profile">
+    <div className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Profile</CardTitle>
+              <div className="flex items-center gap-3">
+                  <User className="h-6 w-6" />
+                  <CardTitle>Profile</CardTitle>
+              </div>
             <CardDescription>
-              Make changes to your public information here. Click save when you're done.
+              This is how others will see you on the site.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -56,17 +62,20 @@ export function SettingsForm() {
                 <Textarea id="bio" placeholder="Tell us about yourself" defaultValue="A seasoned lawyer with a passion for justice."/>
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save Changes</Button>
+          <Separator />
+          <CardFooter className="py-4">
+            <Button onClick={() => handleSaveChanges('Profile')}>Save Changes</Button>
           </CardFooter>
         </Card>
-      </TabsContent>
-      <TabsContent value="workspace">
+
         <Card>
           <CardHeader>
-            <CardTitle>Workspace</CardTitle>
+            <div className="flex items-center gap-3">
+                <Building className="h-6 w-6" />
+                <CardTitle>Workspace</CardTitle>
+            </div>
             <CardDescription>
-              Manage your workspace settings.
+              Manage your firm and workspace settings.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -76,7 +85,7 @@ export function SettingsForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="timezone">Timezone</Label>
-              <Select>
+              <Select defaultValue="est">
                 <SelectTrigger>
                   <SelectValue placeholder="Select a timezone" />
                 </SelectTrigger>
@@ -89,42 +98,49 @@ export function SettingsForm() {
               </Select>
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save Changes</Button>
+          <Separator />
+          <CardFooter className="py-4">
+            <Button onClick={() => handleSaveChanges('Workspace')}>Save Changes</Button>
           </CardFooter>
         </Card>
-      </TabsContent>
-      <TabsContent value="appearance">
+        
         <Card>
           <CardHeader>
-            <CardTitle>Appearance</CardTitle>
+            <div className="flex items-center gap-3">
+                <Palette className="h-6 w-6" />
+                <CardTitle>Appearance</CardTitle>
+            </div>
             <CardDescription>
-              Customize the look and feel of your dashboard. Your changes are saved automatically.
+              Customize the look and feel of your dashboard.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-6">
             <div className="space-y-2">
               <Label>Theme</Label>
-              <RadioGroup 
+               <RadioGroup 
                 value={theme} 
                 onValueChange={setTheme} 
-                className="flex gap-4"
+                className="grid max-w-md grid-cols-2 gap-8 pt-2 md:grid-cols-3"
               >
-                  <Label htmlFor="r1" className="flex flex-col items-center gap-2 rounded-md border-2 border-muted p-1 hover:border-accent [&:has([data-state=checked])]:border-primary">
-                      <RadioGroupItem value="light" id="r1" className="sr-only" />
-                      <div className="w-20 h-12 rounded-sm bg-gray-100" />
-                      <span>Light</span>
+                  <Label htmlFor="light" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary">
+                      <RadioGroupItem value="light" id="light" className="sr-only" />
+                      <Sun className="h-6 w-6" />
+                      <span className="block w-full p-2 text-center font-normal">Light</span>
                   </Label>
-                  <Label htmlFor="r2" className="flex flex-col items-center gap-2 rounded-md border-2 border-muted bg-popover p-1 hover:border-accent [&:has([data-state=checked])]:border-primary">
-                      <RadioGroupItem value="dark" id="r2" className="sr-only" />
-                      <div className="w-20 h-12 rounded-sm bg-slate-900" />
-                      <span>Dark</span>
+                  <Label htmlFor="dark" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary">
+                      <RadioGroupItem value="dark" id="dark" className="sr-only" />
+                      <Moon className="h-6 w-6" />
+                       <span className="block w-full p-2 text-center font-normal">Dark</span>
+                  </Label>
+                  <Label htmlFor="system" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary">
+                      <RadioGroupItem value="system" id="system" className="sr-only" />
+                      <Laptop className="h-6 w-6" />
+                      <span className="block w-full p-2 text-center font-normal">System</span>
                   </Label>
               </RadioGroup>
             </div>
           </CardContent>
         </Card>
-      </TabsContent>
-    </Tabs>
+    </div>
   )
 }
