@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { bookingsData, type Booking } from "@/lib/data";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function parseBookingDate(dateStr: string) {
   // Best: ISO "YYYY-MM-DD"
@@ -88,8 +89,12 @@ function minutesFromTimeLabel(timeStr: string) {
 }
 
 export function Bookings() {
-  const [month, setMonth] = useState(() => startOfMonth(new Date()));
+  const [month, setMonth] = useState<Date | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMonth(startOfMonth(new Date()));
+  }, []);
 
   // Map: dayKey -> Booking[]
   const bookingsByDay = useMemo(() => {
@@ -112,26 +117,27 @@ export function Bookings() {
     return map;
   }, []);
 
-  const { first, days } = useMemo(() => getMonthGrid(month), [month]);
+  const { first, days } = useMemo(() => {
+    if (!month) return { first: new Date(), days: [] };
+    return getMonthGrid(month);
+  }, [month]);
 
   // If month changes, clear selection if it’s not in this month
   useEffect(() => {
-    if (!selectedDay) return;
+    if (!selectedDay || !month) return;
     const d = new Date(selectedDay);
-    if (Number.isNaN(d.getTime()) || !sameMonth(d, first)) setSelectedDay(null);
-  }, [first, selectedDay]);
+    if (Number.isNaN(d.getTime()) || !sameMonth(d, month)) {
+      setSelectedDay(null);
+    }
+  }, [month, selectedDay]);
 
-  const monthLabel = first.toLocaleDateString(undefined, {
-    month: "long",
-    year: "numeric",
-  });
-
-  // Default: show bookings for visible month (like the screenshot “Upcoming …”)
+  // Default: show bookings for visible month
   const visibleMonthBookings = useMemo(() => {
     const res: Booking[] = [];
+    if (!month) return res;
     for (const [key, list] of bookingsByDay.entries()) {
       const d = new Date(key);
-      if (!Number.isNaN(d.getTime()) && sameMonth(d, first)) res.push(...list);
+      if (!Number.isNaN(d.getTime()) && sameMonth(d, month)) res.push(...list);
     }
     // sort by date then time
     res.sort((a, b) => {
@@ -143,14 +149,20 @@ export function Bookings() {
       return minutesFromTimeLabel(a.time) - minutesFromTimeLabel(b.time);
     });
     return res;
-  }, [bookingsByDay, first]);
+  }, [bookingsByDay, month]);
 
   const displayedBookings = useMemo(() => {
     if (!selectedDay) return visibleMonthBookings;
     return bookingsByDay.get(selectedDay) ?? [];
   }, [selectedDay, visibleMonthBookings, bookingsByDay]);
 
+  const monthLabel = month?.toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric",
+  });
+
   const selectedLabel = useMemo(() => {
+    if (!month) return "";
     if (!selectedDay) return `Upcoming bookings for ${monthLabel}`;
     const d = new Date(selectedDay);
     return `Bookings for ${d.toLocaleDateString(undefined, {
@@ -159,9 +171,40 @@ export function Bookings() {
       day: "numeric",
       year: "numeric",
     })}`;
-  }, [selectedDay, monthLabel]);
+  }, [selectedDay, monthLabel, month]);
 
   const selectedCount = displayedBookings.length;
+  
+  if (!month) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Scheduled Bookings</CardTitle>
+          <CardDescription>
+            Click a date in the calendar to view bookings for that day.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-2">
+          <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
+            <div>
+              <Skeleton className="h-6 w-72 mb-3" />
+              <div className="space-y-3">
+                <Skeleton className="h-[88px] w-full" />
+                <Skeleton className="h-[88px] w-full" />
+              </div>
+            </div>
+            <div className="rounded-lg border p-4 space-y-3">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-[200px] w-full" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
 
   return (
     <Card className="h-full">
@@ -202,7 +245,7 @@ export function Bookings() {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={b.avatar} alt={b.client} />
+                        <AvatarImage src={b.avatar} alt={b.client} data-ai-hint="person face" />
                         <AvatarFallback>
                           {b.client
                             .split(" ")
@@ -242,7 +285,7 @@ export function Bookings() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setMonth((m) => addMonths(m, -1))}
+                onClick={() => setMonth((m) => addMonths(m!, -1))}
                 aria-label="Previous month"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -253,7 +296,7 @@ export function Bookings() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setMonth((m) => addMonths(m, 1))}
+                onClick={() => setMonth((m) => addMonths(m!, 1))}
                 aria-label="Next month"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -292,7 +335,6 @@ export function Bookings() {
                   >
                     {d.getDate()}
 
-                    {/* Circle/badge like your screenshot */}
                     {hasBookings && (
                       <span
                         className={cn(
@@ -311,7 +353,6 @@ export function Bookings() {
               })}
             </div>
 
-            {/* Bottom: count for selected date (like screenshot) */}
             <div className="mt-4 rounded-md bg-muted/40 p-3 text-xs">
               <div className="font-medium">Bookings on this date</div>
               <div className="text-muted-foreground">
