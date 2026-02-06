@@ -10,9 +10,7 @@ export default function SettingsPage() {
       <SidebarInset className="bg-slate-50/50">
         <DashboardHeader page="Settings" />
         <main className="p-4 lg:p-8">
-          <div className="max-w-2xl mx-auto">
-            <SettingsForm />
-          </div>
+          <SettingsForm />
         </main>
       </SidebarInset>
     </SidebarProvider>
