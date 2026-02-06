@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { useTheme } from "next-themes"
 import {
   Card,
@@ -11,9 +12,35 @@ import {
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Sun, Moon, Laptop } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function SettingsForm() {
+  const [mounted, setMounted] = React.useState(false)
   const { theme, setTheme } = useTheme()
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Appearance</CardTitle>
+          <CardDescription>
+            Customize the look and feel of your dashboard by selecting a theme.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid max-w-md grid-cols-2 gap-8 pt-2 md:grid-cols-3">
+            <Skeleton className="h-[98px] rounded-md" />
+            <Skeleton className="h-[98px] rounded-md" />
+            <Skeleton className="h-[98px] rounded-md" />
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>
