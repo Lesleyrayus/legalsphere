@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
+import { UploadCloud } from "lucide-react";
 
 type ProfileData = {
   name: string;
@@ -43,10 +45,6 @@ export function Profile() {
     }
   };
 
-  const handleChangePhotoClick = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleSave = () => {
     setProfile(formData);
     setIsEditing(false);
@@ -57,38 +55,42 @@ export function Profile() {
   };
 
   const handleCancel = () => {
-    // Reset form data to the last saved profile state
     setFormData(profile); 
     setIsEditing(false);
   };
   
   const handleEdit = () => {
-    // Initialize form with current profile data
     setFormData(profile);
     setIsEditing(true);
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-muted/30 p-6">
         <CardTitle>Your Profile</CardTitle>
         <CardDescription>
-            {isEditing ? "Update your personal information and preferences." : "View your personal information and preferences."}
+            {isEditing ? "Update your personal information below." : "View your personal information."}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center gap-6">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={isEditing ? formData.avatar : profile.avatar} alt="User Avatar" data-ai-hint="person face" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">{isEditing ? formData.name : profile.name}</h3>
-            <p className="text-muted-foreground">{isEditing ? formData.title : profile.title}</p>
+      
+      <CardContent className="p-6 space-y-8">
+        {/* Avatar and basic info */}
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          <div className="relative">
+            <Avatar className="h-28 w-28 border-4 border-background shadow-md">
+              <AvatarImage src={isEditing ? formData.avatar : profile.avatar} alt="User Avatar" data-ai-hint="person face" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
             {isEditing && (
               <>
-                <Button variant="outline" size="sm" onClick={handleChangePhotoClick}>Change Photo</Button>
-                <input
+                <Button 
+                  size="icon" 
+                  className="absolute -bottom-2 -right-2 rounded-full h-9 w-9"
+                  onClick={() => fileInputRef.current?.click()}>
+                  <UploadCloud className="h-5 w-5"/>
+                  <span className="sr-only">Upload Photo</span>
+                </Button>
+                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handlePhotoChange}
@@ -98,65 +100,77 @@ export function Profile() {
               </>
             )}
           </div>
+          <div className="text-center sm:text-left">
+            <h2 className="text-2xl font-bold">{isEditing ? formData.name : profile.name}</h2>
+            <p className="text-muted-foreground">{isEditing ? formData.title : profile.title}</p>
+          </div>
         </div>
 
-        {isEditing ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+        <Separator />
+
+        {/* Profile Details Form/View */}
+        <div className="space-y-6">
+            <h3 className="text-lg font-medium">Personal Information</h3>
+            {isEditing ? (
+              <div className="space-y-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Full Name</Label>
+                        <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="title">Title</Label>
+                        <Input id="title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})}/>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})}/>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="bio">Biography</Label>
+                    <Textarea id="bio" placeholder="Tell us a little bit about yourself" className="min-h-[120px]" value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})}/>
+                </div>
               </div>
-              <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+            ) : (
+              <div className="space-y-4 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="flex justify-between border-b pb-2">
+                      <span className="text-muted-foreground">Full Name</span>
+                      <span className="font-medium text-right">{profile.name}</span>
+                  </div>
+                   <div className="flex justify-between border-b pb-2">
+                      <span className="text-muted-foreground">Title</span>
+                      <span className="font-medium text-right">{profile.title}</span>
+                  </div>
+                   <div className="flex justify-between border-b pb-2">
+                      <span className="text-muted-foreground">Email</span>
+                      <span className="font-medium text-right">{profile.email}</span>
+                  </div>
+                   <div className="flex justify-between border-b pb-2">
+                      <span className="text-muted-foreground">Phone</span>
+                      <span className="font-medium text-right">{profile.phone}</span>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2 text-muted-foreground">Biography</h4>
+                  <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                    {profile.bio}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input id="title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})}/>
-              </div>
-              <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})}/>
-              </div>
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="bio">Biography</Label>
-                <Textarea id="bio" placeholder="Tell us a little bit about yourself" className="min-h-[100px]" value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})}/>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                  <Label>Full Name</Label>
-                  <p className="text-sm font-medium">{profile.name}</p>
-              </div>
-              <div className="space-y-2">
-                  <Label>Email</Label>
-                  <p className="text-sm text-muted-foreground">{profile.email}</p>
-              </div>
-              <div className="space-y-2">
-                  <Label>Title</Label>
-                  <p className="text-sm font-medium">{profile.title}</p>
-              </div>
-              <div className="space-y-2">
-                  <Label>Phone Number</Label>
-                  <p className="text-sm text-muted-foreground">{profile.phone}</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-                <Label>Biography</Label>
-                <p className="text-sm text-muted-foreground min-h-[100px] whitespace-pre-wrap">{profile.bio}</p>
-            </div>
-          </>
-        )}
+            )}
+        </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="bg-muted/30 p-6 flex justify-end">
         {isEditing ? (
           <div className="flex gap-2">
-            <Button onClick={handleSave}>Save Changes</Button>
             <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         ) : (
           <Button onClick={handleEdit}>Edit Profile</Button>
